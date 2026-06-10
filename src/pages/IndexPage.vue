@@ -1,7 +1,7 @@
 <template>
   <q-page id="index-page" class="q-pa-none full-height">
     <preview-stream
-      v-if="showPreviewThrottled"
+      v-if="showPreviewThrottled && !showBoothOverlay"
       :index_device="configurationStore.configuration.backends.index_backend_video"
       :frame-overlay-image="frameOverlayImage"
       :enable-blurred-background-stream="configurationStore.configuration.uisettings.livestream_blurredbackground"
@@ -35,7 +35,30 @@
 
     <!-- layer display the front page text -->
     <!-- eslint-disable-next-line vue/no-v-html -->
-    <div v-if="stateStore.isStateIdle" id="frontpage_text" v-html="configurationStore.configuration.uisettings.FRONTPAGE_TEXT"></div>
+    <div
+      v-if="stateStore.isStateIdle && !showBoothOverlay"
+      id="frontpage_text"
+      v-html="configurationStore.configuration.uisettings.FRONTPAGE_TEXT"
+    ></div>
+
+    <WelcomeLandingOverlay
+      v-if="showLanding"
+      show-admin
+      show-gallery
+      show-help
+      @start="boothSessionStarted = true"
+      @admin="onBtnAdminClick"
+      @gallery="router.push('/gallery')"
+      @help="router.push('/admin/help')"
+    />
+
+    <StyleSelectionOverlay
+      v-if="showStyleSelection"
+      :triggers="styleSelectionTriggers"
+      show-back
+      @trigger-action="invokeAction"
+      @back="boothSessionStarted = false"
+    />
 
     <!-- dialog for approval -->
     <div v-if="stateStore.isStateApproval">
@@ -46,51 +69,6 @@
       >
       </MediaItemApprovalViewer>
     </div>
-
-    <q-page-sticky position="bottom" class="q-mb-lg">
-      <div v-if="stateStore.isStateIdle">
-        <FrontpageTriggerButtons :triggers="triggerButtons" @trigger-action="invokeAction"></FrontpageTriggerButtons>
-      </div>
-    </q-page-sticky>
-
-    <q-page-sticky position="top-left" class="q-ma-lg">
-      <div v-if="stateStore.isStateIdle">
-        <div class="q-gutter-md">
-          <q-btn
-            v-if="configurationStore.configuration.uisettings.show_gallery_on_frontpage"
-            id="frontpage-button-to-gallery"
-            color="primary"
-            no-caps
-            rounded
-            to="/gallery"
-            class="action-button glass-effect"
-          >
-            <q-icon left name="sym_o_photo_library" />
-            <div class="gt-sm">{{ $t('BTN_LABEL_MAINPAGE_TO_GALLERY') }}</div>
-          </q-btn>
-        </div>
-      </div>
-    </q-page-sticky>
-
-    <q-page-sticky position="top-right" class="q-ma-lg">
-      <div v-if="stateStore.isStateIdle">
-        <div class="q-gutter-md">
-          <q-btn
-            v-if="configurationStore.configuration.uisettings.show_admin_on_frontpage"
-            id="frontpage-button-to-admin"
-            rounded
-            color="transparent"
-            no-caps
-            class="action-button action-button-admin glass-effect"
-            :class="{ 'action-button-admin-invisible': adminButtonInvisible }"
-            @click="onBtnAdminClick"
-          >
-            <q-icon left name="sym_o_admin_panel_settings" />
-            <div class="gt-sm">{{ $t('BTN_LABEL_MAINPAGE_TO_ADMIN') }}</div>
-          </q-btn>
-        </div>
-      </div>
-    </q-page-sticky>
 
     <!-- video state controls -->
     <q-page-sticky v-if="stateStore.isStateRecording" id="frontpage-indicator-recording" position="top-right" :offset="[25, 25]" align="center">
@@ -108,13 +86,15 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 import { watchDebounced, refThrottled } from '@vueuse/core'
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { remoteProcedureCall } from '../util/fetch_api.js'
 import { useStateStore } from '../stores/state-store'
 import { useConfigurationStore } from '../stores/configuration-store'
 import CountdownTimer from '../components/CountdownTimer.vue'
 import type { TriggerSchema } from '../components/FrontpageTriggerButtons.vue'
-import { default as FrontpageTriggerButtons } from '../components/FrontpageTriggerButtons.vue'
+import StyleSelectionOverlay from '../components/StyleSelectionOverlay.vue'
+import WelcomeLandingOverlay from '../components/WelcomeLandingOverlay.vue'
+import { isEmpty } from 'lodash'
 import { default as PreviewStream } from '../components/PreviewStream.vue'
 import _ from 'lodash'
 import MediaItemApprovalViewer from 'src/components/MediaItemApprovalViewer.vue'
@@ -124,6 +104,16 @@ const stateStore = useStateStore()
 const configurationStore = useConfigurationStore()
 const router = useRouter()
 const btnAdminClickCounter = ref(0)
+const boothSessionStarted = ref(false)
+
+watch(
+  () => stateStore.isStateIdle,
+  (idle) => {
+    if (idle) {
+      boothSessionStarted.value = false
+    }
+  },
+)
 
 watchDebounced(
   btnAdminClickCounter,
@@ -135,27 +125,41 @@ watchDebounced(
   },
   { debounce: 500 },
 )
-const triggerButtons = computed(() => {
+const styleSelectionTriggers = computed(() => {
   const result: TriggerSchema[] = []
 
   Object.entries(configurationStore.configuration.actions).forEach(([key, actions]) => {
     actions.forEach((action, index: number) => {
-      const trigger: TriggerSchema = {
-        action: `actions/${key}`,
-        config_index: index,
-        show_button: action.trigger.ui_trigger.show_button,
-        title: action.trigger.ui_trigger.title,
-        icon: action.trigger.ui_trigger.icon,
-        use_custom_color: action.trigger.ui_trigger.use_custom_color,
-        custom_color: action.trigger.ui_trigger.custom_color,
+      const title = action.trigger.ui_trigger.title
+      const icon = action.trigger.ui_trigger.icon
+      const showButton = action.trigger.ui_trigger.show_button
+
+      if (!showButton || (isEmpty(title) && isEmpty(icon))) {
+        return
       }
 
-      result.push(trigger)
+      result.push({
+        action: `actions/${key}`,
+        config_index: index,
+        show_button: showButton,
+        title,
+        icon,
+        use_custom_color: action.trigger.ui_trigger.use_custom_color,
+        custom_color: action.trigger.ui_trigger.custom_color,
+      })
     })
   })
 
   return result
 })
+
+const showLanding = computed(
+  () => stateStore.isStateIdle && !boothSessionStarted.value && styleSelectionTriggers.value.length > 0,
+)
+const showStyleSelection = computed(
+  () => stateStore.isStateIdle && boothSessionStarted.value && styleSelectionTriggers.value.length > 0,
+)
+const showBoothOverlay = computed(() => showLanding.value || showStyleSelection.value)
 
 const adminButtonInvisible = computed(() => {
   return configurationStore.configuration.uisettings.admin_button_invisible
