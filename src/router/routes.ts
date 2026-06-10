@@ -66,12 +66,54 @@ const routes: RouteRecordRaw[] = [
     children: [
       { path: '', component: () => import('pages/AdminDashboardPage.vue') },
       { path: 'gallery', component: () => import('pages/GalleryPage.vue') },
-      { path: 'files', component: () => import('pages/AdminFilesPage.vue') },
-      { path: 'logs', component: () => import('pages/AdminLogsPage.vue') },
       { path: 'help', component: () => import('pages/AdminHelpPage.vue') },
       { path: '1ststart', component: () => import('pages/Admin1stStartPage.vue') },
-      { path: 'multicam', component: () => import('pages/AdminMulticamPage.vue') },
-      { name: 'config', path: 'config/:section?', component: () => import('pages/AdminConfigPage.vue') },
+      { path: 'user', component: () => import('pages/AdminUserPage.vue') },
+      { path: 'event', component: () => import('pages/AdminEventPage.vue') },
+      {
+        name: 'event-config',
+        path: 'event/:eventId/config/:section?',
+        component: () => import('pages/AdminConfigPage.vue'),
+        props: (route) => ({ eventId: route.params.eventId }),
+      },
+      {
+        path: 'event/:eventId/files',
+        component: () => import('pages/AdminFilesPage.vue'),
+        props: (route) => ({ eventId: route.params.eventId }),
+      },
+      { path: 'event-template', component: () => import('pages/AdminEventTemplatePage.vue') },
+      {
+        name: 'template-config',
+        path: 'event-template/:templateId/config/:section?',
+        component: () => import('pages/AdminConfigPage.vue'),
+        props: (route) => ({ templateId: route.params.templateId }),
+      },
+      {
+        path: 'event-template/:templateId/files',
+        component: () => import('pages/AdminFilesPage.vue'),
+        props: (route) => ({ templateId: route.params.templateId }),
+      },
+      {
+        path: 'booth',
+        component: () => import('layouts/BoothLayout.vue'),
+        children: [
+          { path: '', component: () => import('pages/AdminBoothPage.vue') },
+          {
+            name: 'booth-config',
+            path: 'config/:section?',
+            component: () => import('pages/AdminConfigPage.vue'),
+            props: { boothMode: true },
+          },
+          { path: 'files', component: () => import('pages/AdminFilesPage.vue') },
+          { path: 'multicam', component: () => import('pages/AdminMulticamPage.vue') },
+          { path: 'logs', component: () => import('pages/AdminLogsPage.vue') },
+        ],
+      },
+      // legacy redirects
+      { path: 'config/:section?', redirect: (to) => ({ name: 'booth-config', params: { section: to.params.section || 'app' } }) },
+      { path: 'files', redirect: '/admin/booth/files' },
+      { path: 'multicam', redirect: '/admin/booth/multicam' },
+      { path: 'logs', redirect: '/admin/booth/logs' },
     ],
   },
 

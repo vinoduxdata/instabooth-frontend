@@ -1,8 +1,8 @@
 {
   "name": "photobooth-app",
   "version": "2.0.0",
-  "description": "photobooth-app frontend",
-  "productName": "Photobooth-App",
+  "description": "InstaBooth frontend",
+  "productName": "InstaBooth",
   "author": "michael <me@mgrl.de>",
   "type": "module",
   "private": true,

@@ -5,12 +5,11 @@
         <q-btn no-caps flat color="green-1" class="q-mx-sm" stack to="/" icon="sym_o_arrow_back_ios_new" :label="$t('BTN_LABEL_BACK')" />
         <q-separator vertical color="green-3"></q-separator>
         <q-tabs no-caps mobile-arrows shrink stretch active-color="white" class="text-green-1" indicator-color="green-3">
-          <q-route-tab to="/admin" icon="sym_o_dashboard" :label="$t('TAB_LABEL_DASHBOARD')" />
-          <!-- name based so even if children are active, the config tab is highlighted -->
-          <q-route-tab :to="{ name: 'config' }" icon="sym_o_settings" :label="$t('TAB_LABEL_CONFIG')" />
-          <q-route-tab to="/admin/files" icon="sym_o_folder_shared" :label="$t('TAB_LABEL_FILES')" />
-          <q-route-tab to="/admin/multicam" icon="sym_o_3d" :label="$t('TAB_MULTICAM')" />
-          <q-route-tab to="/admin/logs" icon="sym_o_list" :label="$t('Logs')" />
+          <q-route-tab to="/admin" exact icon="sym_o_dashboard" :label="$t('TAB_LABEL_DASHBOARD')" />
+          <q-route-tab to="/admin/booth" icon="sym_o_storefront" label="Booth" />
+          <q-route-tab to="/admin/user" icon="sym_o_group" label="Users" />
+          <q-route-tab to="/admin/event-template" icon="sym_o_library_books" label="Event Templates" />
+          <q-route-tab to="/admin/event" icon="sym_o_event" label="Events" />
           <q-btn-dropdown auto-close stretch flat label="">
             <q-list class="bg-green-5">
               <q-item to="/admin/1ststart">

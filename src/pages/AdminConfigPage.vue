@@ -1,10 +1,11 @@
 <template>
   <q-page id="config-page" padding>
+    <q-banner v-if="scopeLabel" dense class="bg-blue-1 text-dark q-mb-md">{{ scopeLabel }}</q-banner>
     <q-tabs no-caps mobile-arrows dense align="left">
       <q-route-tab
         v-for="(element, index) in configurables"
         :key="index"
-        :to="{ name: 'config', params: { section: element } }"
+        :to="configTabRoute(element)"
         :label="element.replace(/_/g, ' ').split('.').pop()"
         replace
         style="text-transform: capitalize"
@@ -60,7 +61,7 @@
             v-close-popup
             :label="$t('yes, reset')"
             color="negative"
-            @click="[remoteProcedureCall(`/api/admin/config/${selected_configuration}`, 'DELETE'), updateFormSchema()]"
+            @click="[remoteProcedureCall(`${configApiBase}/${selected_configuration}${buildConfigQuery()}`, 'DELETE'), updateFormSchema()]"
           />
         </q-card-actions>
       </q-card>
@@ -68,7 +69,7 @@
   </q-page>
 </template>
 <script setup lang="ts">
-import { ref, provide, onBeforeMount, watch } from 'vue'
+import { ref, provide, onBeforeMount, watch, computed } from 'vue'
 import { JsonForms, type JsonFormsChangeEvent } from '@jsonforms/vue'
 import { generateDefaultUISchema } from '@jsonforms/core'
 import { defaultStyles, mergeStyles, createAjv, quasarRenderers } from '../components/form'
@@ -79,10 +80,45 @@ import { useRoute } from 'vue-router'
 import type { components } from '../dto/api'
 import { useLocalStorage } from '@vueuse/core'
 
-// bind object
+const props = defineProps<{
+  eventId?: string
+  templateId?: string
+  boothMode?: boolean
+}>()
 
 const autoReloadServicesOnSave = useLocalStorage('autoReloadServicesOnSave', true)
 const route = useRoute()
+const scopeLabel = computed(() => {
+  if (props.boothMode) return 'Editing booth configuration (cameras, GPIO, logging)'
+  if (props.templateId) return `Editing template config: ${props.templateId}`
+  if (props.eventId) return `Editing event config: ${props.eventId}`
+  return ''
+})
+const configRouteName = computed(() => {
+  if (props.boothMode) return 'booth-config'
+  if (props.templateId) return 'template-config'
+  if (props.eventId) return 'event-config'
+  return 'booth-config'
+})
+const configApiBase = computed(() => (props.boothMode ? '/api/admin/booth/config' : '/api/admin/config'))
+const configTabRoute = (section: string) => ({
+  name: configRouteName.value,
+  params: {
+    ...(props.eventId ? { eventId: props.eventId } : {}),
+    ...(props.templateId ? { templateId: props.templateId } : {}),
+    section,
+  },
+})
+const buildConfigQuery = (includeReload = false) => {
+  const params = new URLSearchParams()
+  if (props.templateId) params.set('template_id', props.templateId)
+  if (props.eventId) params.set('event_id', props.eventId)
+  if (includeReload && autoReloadServicesOnSave.value && (props.boothMode || !props.templateId)) {
+    params.set('reload', String(autoReloadServicesOnSave.value))
+  }
+  const query = params.toString()
+  return query ? `?${query}` : ''
+}
 const configurationStore = useConfigurationStore()
 const isLoadingState = ref(true)
 const confirm_reset_config = ref(false)
@@ -119,7 +155,9 @@ const onChange = (event: JsonFormsChangeEvent) => {
 
 const getSchema = async () => {
   try {
-    const response = await _fetch(`/api/admin/config/${selected_configuration.value}/schema?schema_type=dereferenced`)
+    const response = await _fetch(
+      `${configApiBase.value}/${selected_configuration.value}/schema?schema_type=dereferenced${buildConfigQuery().replace('?', '&')}`,
+    )
     console.log(response)
     if (!response.ok) {
       throw new Error('Server returned ' + response.status)
@@ -151,7 +189,7 @@ const updateFormSchema = async () => {
 
 const getConfigurables = async () => {
   try {
-    const response = await _fetch('/api/admin/config/list')
+    const response = await _fetch(`${configApiBase.value}/list${buildConfigQuery()}`)
 
     configurables.value = await response.json()
     console.log(configurables.value)
@@ -170,7 +208,7 @@ const getConfigurables = async () => {
 
 const getConfig = async () => {
   try {
-    const response = await _fetch(`/api/admin/config/${selected_configuration.value}`)
+    const response = await _fetch(`${configApiBase.value}/${selected_configuration.value}${buildConfigQuery()}`)
     console.log(response)
 
     return await response.json()
@@ -193,7 +231,7 @@ const saveConfig = async () => {
   console.log(configuration.value)
 
   try {
-    const response = await _fetch(`/api/admin/config/${selected_configuration.value}?reload=${autoReloadServicesOnSave.value}`, {
+    const response = await _fetch(`${configApiBase.value}/${selected_configuration.value}${buildConfigQuery(true)}`, {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(configuration.value),
@@ -204,7 +242,7 @@ const saveConfig = async () => {
       // reload configuration again because some default values could be set by server during processing
       configuration.value = await getConfig()
 
-      if (selected_configuration.value == 'app') {
+      if (selected_configuration.value == 'app' && !props.boothMode) {
         // 'app' means AppConfig is selected. For AppConfig the data is stored in the pinia store and updated here.
         configurationStore.configuration = configuration.value as components['schemas']['AppConfig']
         configurationStore.postConfigchanged()

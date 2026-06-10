@@ -36,7 +36,7 @@
           <q-uploader
             flat
             label="Upload Files"
-            url="/api/admin/files/file/upload"
+            :url="uploadUrl"
             :form-fields="[{ name: 'upload_target_folder', value: folder_current }]"
             :headers="[{ name: 'authorization', value: `Bearer ${getAccessToken()}` }]"
             field-name="uploaded_files"
@@ -130,7 +130,19 @@ import { useQuasar } from 'quasar'
 import { _fetch } from 'src/util/fetch_api'
 import { getAccessToken } from 'src/util/auth'
 
+const props = defineProps<{
+  eventId?: string
+  templateId?: string
+}>()
+
 const $q = useQuasar()
+
+const scopeQuery = computed(() => {
+  if (props.templateId) return `?template_id=${encodeURIComponent(props.templateId)}`
+  if (props.eventId) return `?event_id=${encodeURIComponent(props.eventId)}`
+  return ''
+})
+const uploadUrl = computed(() => `/api/admin/files/file/upload${scopeQuery.value}`)
 
 export declare type AlignType = 'left' | 'center' | 'right'
 export interface PathListItem {
@@ -203,7 +215,7 @@ const onNameClick = (row: PathListItem) => {
   if (row.is_dir) {
     folder_current.value = row.filepath
   } else {
-    _fetch(`/api/admin/files/file/${row.filepath}`, {})
+    _fetch(`/api/admin/files/file/${row.filepath}${scopeQuery.value}`, {})
       .then((res) => res.blob())
       .then((blob) => window.open(URL.createObjectURL(blob)))
   }
@@ -219,7 +231,7 @@ async function getFolderContent(folder = '') {
   selected.value = []
 
   try {
-    const response = await _fetch(`/api/admin/files/list/${folder}`, {
+    const response = await _fetch(`/api/admin/files/list/${folder}${scopeQuery.value}`, {
       method: 'GET',
       headers: { 'Content-Type': 'application/json' },
     })
@@ -248,7 +260,7 @@ async function getFolderContent(folder = '') {
 
 async function getZip(selected = []) {
   try {
-    const response = await _fetch('/api/admin/files/zip', {
+    const response = await _fetch(`/api/admin/files/zip${scopeQuery.value}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(selected),
@@ -283,7 +295,7 @@ async function getZip(selected = []) {
 
 async function deleteItems(selected = []) {
   try {
-    const response = await _fetch('/api/admin/files/delete', {
+    const response = await _fetch(`/api/admin/files/delete${scopeQuery.value}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(selected),
@@ -326,7 +338,7 @@ async function createNewFolder(folder_name: string) {
 
   console.log(newfolder_fullpath)
   try {
-    const response = await _fetch('/api/admin/files/folder/new', {
+    const response = await _fetch(`/api/admin/files/folder/new${scopeQuery.value}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(newfolder_fullpath),

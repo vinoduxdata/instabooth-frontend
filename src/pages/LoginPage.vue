@@ -8,7 +8,8 @@
           <div class="">{{ $t('Sign in below to access the admin dashboard.') }}</div>
         </q-card-section>
         <q-card-section>
-          <q-input v-model="user.password" filled type="password" label="Password"></q-input>
+          <q-input v-model="user.username" filled label="Username" autocomplete="username"></q-input>
+          <q-input v-model="user.password" filled type="password" label="Password" autocomplete="current-password"></q-input>
         </q-card-section>
         <q-card-section>
           <q-btn rounded color="primary" label="Sign in" class="full-width" type="submit"></q-btn>
@@ -39,7 +40,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const user = reactive({
-  username: 'admin', // there are no usernames in our app, it's always admin...
+  username: 'admin',
   password: null,
 })
 
