@@ -1,6 +1,6 @@
 <template>
   <q-page id="config-page" padding>
-    <q-banner v-if="scopeLabel" dense class="bg-blue-1 text-dark q-mb-md">{{ scopeLabel }}</q-banner>
+    <q-banner v-if="scopeLabel" dense class="instabooth-scope-banner q-mb-md">{{ scopeLabel }}</q-banner>
     <q-tabs no-caps mobile-arrows dense align="left">
       <q-route-tab
         v-for="(element, index) in configurables"
@@ -300,6 +300,6 @@ const saveConfig = async () => {
 
 .control-wrapper .control-description-wrapper,
 .array-list-description {
-  color: $grey;
+  color: rgba(255, 255, 255, 0.55);
 }
 </style>

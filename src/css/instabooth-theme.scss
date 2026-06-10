@@ -1,0 +1,271 @@
+// InstaBooth brand theme — purple galaxy palette (landing / style-selection screens)
+
+:root {
+  --ib-bg-deep: #0f0524;
+  --ib-bg-mid: #12082a;
+  --ib-bg-card: rgba(24, 14, 40, 0.88);
+  --ib-border: rgba(167, 139, 250, 0.22);
+  --ib-border-strong: rgba(167, 139, 250, 0.4);
+  --ib-purple: #a855f7;
+  --ib-purple-light: #c4b5fd;
+  --ib-pink: #ec4899;
+  --ib-cyan: #67e8f9;
+  --ib-text: rgba(255, 255, 255, 0.92);
+  --ib-text-muted: rgba(255, 255, 255, 0.62);
+  --ib-glow: 0 0 40px rgba(139, 92, 246, 0.22);
+  --ib-gradient-brand: linear-gradient(90deg, #a855f7 0%, #ec4899 55%, #f472b6 100%);
+  --ib-gradient-header: linear-gradient(90deg, rgba(45, 20, 70, 0.98) 0%, rgba(88, 28, 135, 0.92) 50%, rgba(60, 20, 90, 0.98) 100%);
+  --ib-gradient-page: radial-gradient(ellipse 80% 55% at 50% 0%, rgba(139, 92, 246, 0.18), transparent 70%),
+    radial-gradient(ellipse 50% 40% at 90% 90%, rgba(236, 72, 153, 0.1), transparent 55%),
+    linear-gradient(165deg, #0f0524 0%, #12082a 45%, #0a0418 100%);
+}
+
+.instabooth-app,
+.body--dark {
+  color: var(--ib-text);
+}
+
+.body--dark {
+  background: var(--ib-gradient-page) !important;
+  background-attachment: fixed;
+}
+
+.body--dark .q-layout,
+.body--dark .q-page-container,
+.body--dark .q-page {
+  background: transparent;
+}
+
+// Cards & surfaces
+.body--dark .q-card {
+  background: var(--ib-bg-card) !important;
+  border: 1px solid var(--ib-border);
+  box-shadow: var(--ib-glow);
+  color: var(--ib-text);
+}
+
+.body--dark .q-card--flat {
+  background: rgba(20, 12, 36, 0.65) !important;
+}
+
+.body--dark .q-item__label--caption,
+.body--dark .text-grey,
+.body--dark .text-grey-7 {
+  color: var(--ib-text-muted) !important;
+}
+
+// Admin header
+.instabooth-admin-header {
+  background: var(--ib-gradient-header) !important;
+  border-bottom: 1px solid var(--ib-border);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+
+  .q-toolbar {
+    color: var(--ib-text);
+  }
+
+  .q-tabs {
+    color: var(--ib-purple-light);
+  }
+
+  .q-tab--active {
+    color: #fff !important;
+  }
+
+  .q-tab__indicator {
+    background: var(--ib-gradient-brand);
+    height: 3px;
+  }
+
+  .q-btn {
+    color: var(--ib-purple-light);
+  }
+
+  .q-separator {
+    background: var(--ib-border);
+  }
+}
+
+.instabooth-admin-dropdown {
+  background: rgba(30, 16, 50, 0.97) !important;
+  border: 1px solid var(--ib-border);
+
+  .q-item {
+    color: var(--ib-text);
+  }
+
+  .q-item:hover {
+    background: rgba(139, 92, 246, 0.15);
+  }
+}
+
+// Booth admin sub-tabs
+.booth-layout .q-tabs {
+  .q-tab--active {
+    color: var(--ib-purple-light) !important;
+  }
+
+  .q-tab__indicator {
+    background: var(--ib-gradient-brand);
+  }
+}
+
+// Config form drawer
+.body--dark .config-form {
+  .q-drawer {
+    background: rgba(20, 12, 36, 0.95) !important;
+    border-right: 1px solid var(--ib-border);
+  }
+
+  .q-item--active {
+    background: rgba(139, 92, 246, 0.2) !important;
+    color: var(--ib-purple-light) !important;
+  }
+}
+
+// Tables
+.body--dark .q-table__card,
+.body--dark .q-table__container {
+  background: var(--ib-bg-card) !important;
+  border: 1px solid var(--ib-border);
+}
+
+.body--dark .q-table thead tr,
+.body--dark .q-table tbody td {
+  border-color: var(--ib-border);
+}
+
+.body--dark .q-table tbody tr:hover {
+  background: rgba(139, 92, 246, 0.08) !important;
+}
+
+// Inputs
+.body--dark .q-field--filled .q-field__control {
+  background: rgba(30, 16, 50, 0.75) !important;
+  border: 1px solid var(--ib-border);
+
+  &:before {
+    background: transparent !important;
+  }
+}
+
+.body--dark .q-field__label,
+.body--dark .q-field__native,
+.body--dark .q-field__input {
+  color: var(--ib-text) !important;
+}
+
+// Tabs (in-page)
+.body--dark .q-tabs {
+  color: var(--ib-text-muted);
+}
+
+.body--dark .q-tab--active {
+  color: var(--ib-purple-light) !important;
+}
+
+.body--dark .q-tab__indicator {
+  background: var(--ib-gradient-brand);
+}
+
+// Banners & dialogs
+.instabooth-scope-banner {
+  background: rgba(139, 92, 246, 0.18) !important;
+  border: 1px solid var(--ib-border);
+  color: var(--ib-purple-light) !important;
+}
+
+.body--dark .q-dialog .q-card {
+  background: rgba(24, 14, 40, 0.97) !important;
+}
+
+// Login
+.login-page {
+  background: var(--ib-gradient-page);
+}
+
+.login-card {
+  background: var(--ib-bg-card) !important;
+  border: 1px solid var(--ib-border-strong);
+  border-radius: 1.25rem !important;
+  box-shadow: var(--ib-glow), 0 20px 60px rgba(0, 0, 0, 0.45);
+  color: var(--ib-text);
+  min-width: 380px;
+  max-width: 440px;
+
+  .text-h5 {
+    background: linear-gradient(180deg, #e9d5ff 0%, #f9a8d4 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  a {
+    color: var(--ib-cyan);
+  }
+}
+
+// Gallery
+#gallery-page {
+  min-height: 100%;
+}
+
+.body--dark .q-header.bg-primary {
+  background: var(--ib-gradient-header) !important;
+  border-bottom: 1px solid var(--ib-border);
+}
+
+.body--dark .q-drawer {
+  background: rgba(20, 12, 36, 0.97) !important;
+  border-left: 1px solid var(--ib-border);
+}
+
+.body--dark #gallery-page .q-card {
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+// Primary buttons — gradient accent
+.body--dark .q-btn.bg-primary:not(.q-btn--flat):not(.q-btn--outline) {
+  background: var(--ib-gradient-brand) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 0 20px rgba(168, 85, 247, 0.35);
+}
+
+// Progress bars
+.body--dark .q-linear-progress__track {
+  background: rgba(139, 92, 246, 0.15) !important;
+}
+
+.body--dark .q-linear-progress__model {
+  background: var(--ib-gradient-brand) !important;
+}
+
+// Scrollbars (webkit)
+.body--dark ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.body--dark ::-webkit-scrollbar-thumb {
+  background: rgba(167, 139, 250, 0.35);
+  border-radius: 4px;
+}
+
+.body--dark ::-webkit-scrollbar-track {
+  background: rgba(15, 5, 36, 0.5);
+}
+
+// Return / back button on subpages
+.body--dark .action-button.glass-effect.bg-primary {
+  background: color-mix(in srgb, var(--ib-purple) 45%, transparent) !important;
+  border: 1px solid var(--ib-border);
+}
+
+// Connection overlay
+.connection-overlay-card {
+  background: var(--ib-bg-card) !important;
+  border: 1px solid var(--ib-border-strong);
+  box-shadow: var(--ib-glow);
+  color: var(--ib-text);
+}

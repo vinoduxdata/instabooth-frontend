@@ -17,7 +17,7 @@
 
     <q-card-actions align="right" class="text-primary">
       <q-btn no-caps flat label="Cancel" v-close-popup />
-      <q-btn color="green" no-caps label="Generate" @click="postBoardDefinition" :loading="loading" />
+      <q-btn color="primary" no-caps label="Generate" @click="postBoardDefinition" :loading="loading" />
     </q-card-actions>
 
     <q-card-section v-if="imageUrl">

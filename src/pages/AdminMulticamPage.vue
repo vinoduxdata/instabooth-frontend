@@ -13,7 +13,7 @@
           <q-btn
             outline
             no-caps
-            color="green"
+            color="primary"
             href="https://photobooth-app.org/wigglegramcamera/"
             target="_blank"
             icon-right="sym_o_open_in_new"
@@ -71,7 +71,7 @@
                 <q-btn color="accent" no-caps :label="$t('Generate your ChAruCo board')" @click="dialogCharucoGenerator = true" />
               </div>
               <div class="col q-gutter-sm" align="right">
-                <q-btn no-caps @click="step = 1" color="green" label="Start" icon-right="sym_o_arrow_right" />
+                <q-btn no-caps @click="step = 1" color="primary" label="Start" icon-right="sym_o_arrow_right" />
               </div>
             </div>
           </q-stepper-navigation>
@@ -109,11 +109,11 @@
           <q-stepper-navigation>
             <div class="row">
               <div class="col q-gutter-sm">
-                <q-btn flat no-caps color="green" label="Configure backends" icon-right="sym_o_open_in_new" to="/admin/config" />
+                <q-btn flat no-caps color="primary" label="Configure backends" icon-right="sym_o_open_in_new" to="/admin/config" />
               </div>
               <div class="col q-gutter-sm" align="right">
-                <q-btn flat no-caps @click="step = 0" color="green" :label="$t('BTN_LABEL_BACK')" icon="sym_o_arrow_left" />
-                <q-btn no-caps @click="step = 2" color="green" :label="$t('Continue')" icon-right="sym_o_arrow_right" />
+                <q-btn flat no-caps @click="step = 0" color="primary" :label="$t('BTN_LABEL_BACK')" icon="sym_o_arrow_left" />
+                <q-btn no-caps @click="step = 2" color="primary" :label="$t('Continue')" icon-right="sym_o_arrow_right" />
               </div>
             </div>
           </q-stepper-navigation>
@@ -163,8 +163,8 @@
                 <q-btn no-caps @click="capture" color="accent" label="Capture" :loading="loading" />
               </div>
               <div class="col q-gutter-sm" align="right">
-                <q-btn flat no-caps @click="step = 1" color="green" :label="$t('BTN_LABEL_BACK')" icon="sym_o_arrow_left" />
-                <q-btn no-caps @click="step = 3" color="green" :label="$t('Continue')" :disable="images.length == 0" icon-right="sym_o_arrow_right" />
+                <q-btn flat no-caps @click="step = 1" color="primary" :label="$t('BTN_LABEL_BACK')" icon="sym_o_arrow_left" />
+                <q-btn no-caps @click="step = 3" color="primary" :label="$t('Continue')" :disable="images.length == 0" icon-right="sym_o_arrow_right" />
               </div>
             </div>
           </q-stepper-navigation>
@@ -180,8 +180,8 @@
                 <q-btn no-caps color="accent" :disable="images.length == 0" :label="$t('Calculate')" @click="postCalibration" :loading="loading" />
               </div>
               <div class="col q-gutter-sm" align="right">
-                <q-btn no-caps flat @click="step = 2" color="green" :label="$t('BTN_LABEL_BACK')" icon="sym_o_arrow_left" />
-                <q-btn no-caps @click="step = 4" color="green" :label="$t('Continue')" icon-right="sym_o_arrow_right" />
+                <q-btn no-caps flat @click="step = 2" color="primary" :label="$t('BTN_LABEL_BACK')" icon="sym_o_arrow_left" />
+                <q-btn no-caps @click="step = 4" color="primary" :label="$t('Continue')" icon-right="sym_o_arrow_right" />
               </div>
             </div>
           </q-stepper-navigation>
@@ -199,7 +199,7 @@
                 <q-btn no-caps color="accent" :label="$t('Capture and create wigglegram')" @click="captureCreateWigglegram" :loading="loading" />
               </div>
               <div class="col q-gutter-sm" align="right">
-                <q-btn no-caps flat @click="step = 3" color="green" :label="$t('BTN_LABEL_BACK')" icon="sym_o_arrow_left" />
+                <q-btn no-caps flat @click="step = 3" color="primary" :label="$t('BTN_LABEL_BACK')" icon="sym_o_arrow_left" />
               </div>
             </div>
           </q-stepper-navigation>

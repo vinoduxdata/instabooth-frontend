@@ -15,10 +15,11 @@
   src: url('./fonts/Inter-4.0/web/InterVariable-Italic.woff2') format('woff2-variations');
 }
 
+@import './instabooth-theme.scss';
+
 // app global css in SCSS form
 body {
-  background: $grey-2;
-  background: linear-gradient(120deg, rgba(245, 245, 245, 1) 0%, rgb(227, 229, 240) 50%, rgb(245, 245, 245) 100%);
+  background: #0f0524;
 }
 
 h1,

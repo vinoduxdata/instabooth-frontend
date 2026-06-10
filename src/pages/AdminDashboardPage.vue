@@ -8,9 +8,9 @@
             <q-item>
               <q-item-section>
                 <q-item-label caption>{{ $t('Host') }}</q-item-label>
-                <q-item-label> <q-btn no-caps flat color="green" :label="$t('Reboot Host')" @click="confirm_reboot_host = true" /> </q-item-label>
+                <q-item-label> <q-btn no-caps flat color="primary" :label="$t('Reboot Host')" @click="confirm_reboot_host = true" /> </q-item-label>
                 <q-item-label>
-                  <q-btn no-caps flat color="green" :label="$t('Shutdown Host')" @click="confirm_shutdown_host = true" />
+                  <q-btn no-caps flat color="primary" :label="$t('Shutdown Host')" @click="confirm_shutdown_host = true" />
                 </q-item-label>
               </q-item-section>
             </q-item>
@@ -19,7 +19,7 @@
               <q-item-section>
                 <q-item-label caption>{{ $t('Service') }}</q-item-label>
                 <q-item-label>
-                  <q-btn no-caps flat color="green" :label="$t('Reload services')" @click="confirm_reload_service = true" />
+                  <q-btn no-caps flat color="primary" :label="$t('Reload services')" @click="confirm_reload_service = true" />
                 </q-item-label>
               </q-item-section>
             </q-item>
@@ -28,13 +28,13 @@
               <q-item-section>
                 <q-item-label caption>{{ $t('Systemctl (Linux only)') }}</q-item-label>
                 <q-item-label>
-                  <q-btn no-caps flat color="green" :label="$t('install systemctl service')" @click="confirm_install_systemctl = true" />
+                  <q-btn no-caps flat color="primary" :label="$t('install systemctl service')" @click="confirm_install_systemctl = true" />
                 </q-item-label>
                 <q-item-label>
-                  <q-btn no-caps flat color="green" :label="$t('uninstall systemctl service')" @click="confirm_uninstall_systemctl = true" />
+                  <q-btn no-caps flat color="primary" :label="$t('uninstall systemctl service')" @click="confirm_uninstall_systemctl = true" />
                 </q-item-label>
                 <q-item-label>
-                  <q-btn no-caps flat color="green" :label="$t('restart systemctl service')" @click="confirm_restart_systemctl = true" />
+                  <q-btn no-caps flat color="primary" :label="$t('restart systemctl service')" @click="confirm_restart_systemctl = true" />
                 </q-item-label>
               </q-item-section>
             </q-item>
@@ -55,7 +55,7 @@
               <q-item-section side>
                 <q-btn
                   flat
-                  color="green"
+                  color="primary"
                   round
                   icon="sym_o_translate"
                   href="https://github.com/photobooth-app/photobooth-app/blob/main/CONTRIBUTING.md#help-translate-the-app"
@@ -76,7 +76,7 @@
               <q-item-section side>
                 <q-btn
                   flat
-                  color="green"
+                  color="primary"
                   round
                   icon="sym_o_open_in_new"
                   href="https://github.com/photobooth-app/photobooth-frontend/tree/main/src/i18n/locales"
@@ -90,7 +90,7 @@
         </q-card-section>
         <q-separator />
         <q-card-actions align="right" vertical>
-          <q-btn no-caps flat color="green" @click="enableInContextTranslation()">{{ $t('Translate in context using Crowdin') }}</q-btn>
+          <q-btn no-caps flat color="primary" @click="enableInContextTranslation()">{{ $t('Translate in context using Crowdin') }}</q-btn>
         </q-card-actions>
       </q-card>
 
@@ -104,7 +104,7 @@
                 <q-item-label>{{ store.information_onetime.data_directory }} </q-item-label>
               </q-item-section>
               <q-item-section side>
-                <q-btn flat round color="green" icon="sym_o_folder_shared" to="/admin/files" />
+                <q-btn flat round color="primary" icon="sym_o_folder_shared" to="/admin/files" />
               </q-item-section>
             </q-item>
 
@@ -115,7 +115,7 @@
               </q-item-section>
 
               <q-item-section side>
-                <q-btn flat round color="green" icon="sym_o_upgrade" href="https://pypi.org/project/photobooth-app/" target="_blank" />
+                <q-btn flat round color="primary" icon="sym_o_upgrade" href="https://pypi.org/project/photobooth-app/" target="_blank" />
               </q-item-section>
             </q-item>
 
@@ -130,7 +130,7 @@
               <q-item-section>
                 <q-item-label caption>{{ $t('cpu load') }} </q-item-label>
                 <q-item-label>
-                  <q-linear-progress color="green" size="lg" :value="store.information_interval.cpu_percent / 100"> </q-linear-progress>
+                  <q-linear-progress color="primary" size="lg" :value="store.information_interval.cpu_percent / 100"> </q-linear-progress>
                 </q-item-label>
 
                 <q-item-label>
@@ -144,7 +144,7 @@
               <q-item-section>
                 <q-item-label caption>{{ $t('disk space') }} </q-item-label>
                 <q-item-label>
-                  <q-linear-progress color="green" size="lg" :value="store.information_onetime.disk.used / store.information_onetime.disk.total" />
+                  <q-linear-progress color="primary" size="lg" :value="store.information_onetime.disk.used / store.information_onetime.disk.total" />
                 </q-item-label>
                 <q-item-label> {{ (store.information_onetime.disk.free / 1024 ** 3).toFixed(1) }}{{ $t('GB available') }} </q-item-label>
               </q-item-section>
@@ -155,7 +155,7 @@
                 <q-item-label caption>{{ $t('memory') }} </q-item-label>
                 <q-item-label>
                   <q-linear-progress
-                    color="green"
+                    color="primary"
                     size="lg"
                     :value="store.information_interval.memory.used / store.information_interval.memory.total"
                   />
@@ -168,7 +168,7 @@
               <q-item-section>
                 <q-item-label caption>{{ $t('Battery') }} </q-item-label>
                 <q-item-label>
-                  <q-linear-progress color="green" size="lg" :value="store.information_interval.battery_percent / 100" />
+                  <q-linear-progress color="primary" size="lg" :value="store.information_interval.battery_percent / 100" />
                 </q-item-label>
                 <!--eslint-disable-next-line @intlify/vue-i18n/no-raw-text-->
                 <q-item-label> {{ store.information_interval.battery_percent.toFixed(0) }}% </q-item-label>
@@ -283,8 +283,8 @@
         </q-card-section>
         <q-separator />
         <q-card-actions align="right" vertical>
-          <q-btn no-caps flat color="green" :label="$t('BTN_LABEL_DELETE_ALL_MEDIA_FILES')" @click="confirm_delete_all = true" />
-          <q-btn no-caps flat color="green" :label="$t('Clear recycle directory')" @click="confirm_clear_recycle_directory = true" />
+          <q-btn no-caps flat color="primary" :label="$t('BTN_LABEL_DELETE_ALL_MEDIA_FILES')" @click="confirm_delete_all = true" />
+          <q-btn no-caps flat color="primary" :label="$t('Clear recycle directory')" @click="confirm_clear_recycle_directory = true" />
         </q-card-actions>
       </q-card>
 
@@ -325,14 +325,14 @@
                 </q-item-label>
               </q-item-section>
               <q-item-section side>
-                <q-btn flat color="green" icon="sym_o_history" @click="displayResetStatsConfirm(entry.action)" />
+                <q-btn flat color="primary" icon="sym_o_history" @click="displayResetStatsConfirm(entry.action)" />
               </q-item-section>
             </q-item>
           </q-list>
         </q-card-section>
         <q-separator />
         <q-card-actions align="right">
-          <q-btn no-caps flat color="green" label="Reset all" @click="displayResetStatsConfirm('')" />
+          <q-btn no-caps flat color="primary" label="Reset all" @click="displayResetStatsConfirm('')" />
         </q-card-actions>
       </q-card>
 
@@ -355,27 +355,27 @@
                 </q-item-label>
               </q-item-section>
               <q-item-section side>
-                <q-btn flat color="green" icon="sym_o_history" @click="displayResetLimitsConfirm(entry.action)" />
+                <q-btn flat color="primary" icon="sym_o_history" @click="displayResetLimitsConfirm(entry.action)" />
               </q-item-section>
             </q-item>
           </q-list>
         </q-card-section>
         <q-separator />
         <q-card-actions align="right">
-          <q-btn no-caps flat color="green" label="Reset all" @click="displayResetLimitsConfirm('')" />
+          <q-btn no-caps flat color="primary" label="Reset all" @click="displayResetLimitsConfirm('')" />
         </q-card-actions>
       </q-card>
     </div>
     <q-dialog v-model="confirm_reboot_host">
       <q-card class="q-pa-sm" style="min-width: 350px">
         <q-card-section class="row items-center" style="flex-wrap: nowrap">
-          <q-avatar icon="sym_o_restart_alt" color="green" text-color="white" />
+          <q-avatar icon="sym_o_restart_alt" color="primary" text-color="white" />
           <span class="q-ml-sm">{{ $t('MSG_CONFIRM_REBOOT') }}</span>
         </q-card-section>
 
         <q-card-actions align="right">
           <q-btn no-caps v-close-popup flat :label="$t('BTN_LABEL_CANCEL')" />
-          <q-btn no-caps v-close-popup :label="$t('BTN_LABEL_REBOOT')" color="green" @click="remoteProcedureCall('/api/system/host/reboot')" />
+          <q-btn no-caps v-close-popup :label="$t('BTN_LABEL_REBOOT')" color="primary" @click="remoteProcedureCall('/api/system/host/reboot')" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -383,13 +383,13 @@
     <q-dialog v-model="confirm_shutdown_host">
       <q-card class="q-pa-sm" style="min-width: 350px">
         <q-card-section class="row items-center" style="flex-wrap: nowrap">
-          <q-avatar icon="sym_o_power_settings_new" color="green" text-color="white" />
+          <q-avatar icon="sym_o_power_settings_new" color="primary" text-color="white" />
           <span class="q-ml-sm">{{ $t('MSG_CONFIRM_SHUTDOWN') }}</span>
         </q-card-section>
 
         <q-card-actions align="right">
           <q-btn no-caps v-close-popup flat :label="$t('BTN_LABEL_CANCEL')" />
-          <q-btn no-caps v-close-popup :label="$t('BTN_LABEL_SHUTDOWN')" color="green" @click="remoteProcedureCall('/api/system/host/shutdown')" />
+          <q-btn no-caps v-close-popup :label="$t('BTN_LABEL_SHUTDOWN')" color="primary" @click="remoteProcedureCall('/api/system/host/shutdown')" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -397,7 +397,7 @@
     <q-dialog v-model="confirm_reload_service">
       <q-card class="q-pa-sm" style="min-width: 350px">
         <q-card-section class="row items-center" style="flex-wrap: nowrap">
-          <q-avatar icon="sym_o_restart_alt" color="green" text-color="white" />
+          <q-avatar icon="sym_o_restart_alt" color="primary" text-color="white" />
           <span class="q-ml-sm">{{ $t('You sure to reload the services?') }}</span>
         </q-card-section>
 
@@ -407,7 +407,7 @@
             no-caps
             v-close-popup
             :label="$t('BTN_LABEL_RELOAD_SERVICE')"
-            color="green"
+            color="primary"
             @click="remoteProcedureCall('/api/system/service/reload')"
           />
         </q-card-actions>
@@ -417,7 +417,7 @@
     <q-dialog v-model="confirm_restart_systemctl">
       <q-card class="q-pa-sm" style="min-width: 350px">
         <q-card-section class="row items-center" style="flex-wrap: nowrap">
-          <q-avatar icon="sym_o_restart_alt" color="green" text-color="white" />
+          <q-avatar icon="sym_o_restart_alt" color="primary" text-color="white" />
           <span class="q-ml-sm">{{ $t('MSG_CONFIRM_RESTART_SERVICE') }}</span>
         </q-card-section>
 
@@ -427,7 +427,7 @@
             no-caps
             v-close-popup
             :label="$t('BTN_LABEL_RESTART_SERVICE')"
-            color="green"
+            color="primary"
             @click="remoteProcedureCall('/api/system/systemctl/restart')"
           />
         </q-card-actions>
@@ -437,7 +437,7 @@
     <q-dialog v-model="confirm_install_systemctl">
       <q-card class="q-pa-sm" style="min-width: 350px">
         <q-card-section class="row items-center" style="flex-wrap: nowrap">
-          <q-avatar icon="sym_o_add_circle" color="green" text-color="white" />
+          <q-avatar icon="sym_o_add_circle" color="primary" text-color="white" />
           <span class="q-ml-sm">{{ $t('MSG_CONFIRM_INSTALL_SERVICE') }}</span>
         </q-card-section>
 
@@ -447,7 +447,7 @@
             no-caps
             v-close-popup
             :label="$t('BTN_LABEL_INSTALL_SERVICE')"
-            color="green"
+            color="primary"
             @click="remoteProcedureCall('/api/system/systemctl/install')"
           />
         </q-card-actions>
@@ -457,7 +457,7 @@
     <q-dialog v-model="confirm_uninstall_systemctl">
       <q-card class="q-pa-sm" style="min-width: 350px">
         <q-card-section class="row items-center" style="flex-wrap: nowrap">
-          <q-avatar icon="sym_o_cancel" color="green" text-color="white" />
+          <q-avatar icon="sym_o_cancel" color="primary" text-color="white" />
           <span class="q-ml-sm">{{ $t('MSG_CONFIRM_UNINSTALL_SERVICE') }}</span>
         </q-card-section>
 
@@ -467,7 +467,7 @@
             no-caps
             v-close-popup
             :label="$t('BTN_LABEL_UNINSTALL_SERVICE')"
-            color="green"
+            color="primary"
             @click="remoteProcedureCall('/api/system/systemctl/uninstall')"
           />
         </q-card-actions>
@@ -477,7 +477,7 @@
     <q-dialog v-model="confirm_reset_stats_counter">
       <q-card class="q-pa-sm">
         <q-card-section class="row items-center" style="flex-wrap: nowrap">
-          <q-avatar icon="sym_o_history" color="green" text-color="white" />
+          <q-avatar icon="sym_o_history" color="primary" text-color="white" />
           <span class="q-ml-sm">{{ $t('Are you sure you want to reset the usage statistics counter?') }}</span>
         </q-card-section>
 
@@ -491,7 +491,7 @@
     <q-dialog v-model="confirm_reset_limits_counter">
       <q-card class="q-pa-sm">
         <q-card-section class="row items-center" style="flex-wrap: nowrap">
-          <q-avatar icon="sym_o_history" color="green" text-color="white" />
+          <q-avatar icon="sym_o_history" color="primary" text-color="white" />
           <span class="q-ml-sm">{{ $t('Are you sure you want to reset the share limits counter?') }}</span>
         </q-card-section>
 
@@ -505,7 +505,7 @@
     <q-dialog v-model="confirm_delete_all">
       <q-card class="q-pa-sm">
         <q-card-section class="row items-center" style="flex-wrap: nowrap">
-          <q-avatar icon="sym_o_delete" color="green" text-color="white" />
+          <q-avatar icon="sym_o_delete" color="primary" text-color="white" />
           <span class="q-ml-sm">{{ $t('MSG_CONFIRM_DELETE_ALL_MEDIA_FILES') }}</span>
         </q-card-section>
 
@@ -519,7 +519,7 @@
     <q-dialog v-model="confirm_clear_recycle_directory">
       <q-card class="q-pa-sm">
         <q-card-section class="row items-center" style="flex-wrap: nowrap">
-          <q-avatar icon="sym_o_delete" color="green" text-color="white" />
+          <q-avatar icon="sym_o_delete" color="primary" text-color="white" />
           <span class="q-ml-sm">{{ $t('Are you sure to clear the recycle directory?') }}</span>
         </q-card-section>
 

@@ -6,7 +6,7 @@
           <div class="text-h6">Event templates</div>
           <div class="text-caption text-grey-7">Git-synced templates in instabooth-admin</div>
         </div>
-        <q-btn no-caps color="green" icon="sym_o_add" label="Create template" @click="openCreateDialog" />
+        <q-btn no-caps color="primary" icon="sym_o_add" label="Create template" @click="openCreateDialog" />
       </q-card-section>
     </q-card>
 
@@ -149,7 +149,7 @@
         </q-card-section>
         <q-card-actions align="right">
           <q-btn no-caps flat label="Cancel" v-close-popup />
-          <q-btn no-caps color="green" :label="editingId ? 'Save' : 'Create'" :loading="saving" @click="saveTemplate" />
+          <q-btn no-caps color="primary" :label="editingId ? 'Save' : 'Create'" :loading="saving" @click="saveTemplate" />
         </q-card-actions>
       </q-card>
     </q-dialog>

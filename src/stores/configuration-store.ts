@@ -20,11 +20,12 @@ export const useConfigurationStore = defineStore('configuration-store', {
   }),
   actions: {
     postConfigchanged() {
-      // apply theme settings
-      setCssVar('primary', this.configuration.uisettings.PRIMARY_COLOR)
-      setCssVar('secondary', this.configuration.uisettings.SECONDARY_COLOR)
-      const theme = this.configuration.uisettings.theme
-      Dark.set(theme === 'system' ? 'auto' : theme === 'dark')
+      // InstaBooth brand theme — purple galaxy palette across kiosk + admin
+      setCssVar('primary', '#a855f7')
+      setCssVar('secondary', '#ec4899')
+      setCssVar('accent', '#67e8f9')
+      Dark.set(true)
+      document.documentElement.classList.add('instabooth-app')
     },
 
     initStore(forceReload = false) {

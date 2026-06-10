@@ -6,7 +6,7 @@
           <div class="text-h6">Users</div>
           <div class="text-caption text-grey-7">Manage admin dashboard accounts.</div>
         </div>
-        <q-btn no-caps color="green" icon="sym_o_person_add" label="Add user" @click="openCreateDialog" />
+        <q-btn no-caps color="primary" icon="sym_o_person_add" label="Add user" @click="openCreateDialog" />
       </q-card-section>
     </q-card>
 

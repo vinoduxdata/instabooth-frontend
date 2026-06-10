@@ -131,7 +131,7 @@ export default defineConfig((ctx) => {
         notify: {
           /* look at QuasarConfOptions from the API card */
         },
-        dark: 'auto',
+        dark: true,
       },
 
       iconSet: 'material-symbols-outlined', // Quasar icon set

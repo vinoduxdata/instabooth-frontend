@@ -11,7 +11,7 @@
               </div>
               <div v-else-if="!adminEnabled" class="text-caption text-warning">Multi-event admin is not configured.</div>
             </div>
-            <q-btn no-caps color="green" icon="sym_o_add" label="Create event" :disable="!adminEnabled" @click="openCreateDialog" />
+            <q-btn no-caps color="primary" icon="sym_o_add" label="Create event" :disable="!adminEnabled" @click="openCreateDialog" />
           </q-card-section>
         </q-card>
       </div>
@@ -45,7 +45,7 @@
                 v-if="props.row.status !== 'active' && props.row.status !== 'deleted'"
                 no-caps
                 flat
-                color="green"
+                color="primary"
                 label="Activate"
                 @click="confirmActivate(props.row)"
               />
@@ -140,7 +140,7 @@
         </q-card-section>
         <q-card-actions align="right">
           <q-btn no-caps flat label="Cancel" v-close-popup />
-          <q-btn no-caps color="green" label="Create" :loading="creating" @click="createEvent" />
+          <q-btn no-caps color="primary" label="Create" :loading="creating" @click="createEvent" />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -148,14 +148,14 @@
     <q-dialog v-model="showActivateDialog">
       <q-card style="min-width: 420px">
         <q-card-section class="row items-center">
-          <q-avatar icon="sym_o_event" color="green" text-color="white" />
+          <q-avatar icon="sym_o_event" color="primary" text-color="white" />
           <span class="q-ml-sm">
             Activate <strong>{{ selectedEvent?.name }}</strong>? The booth will restart and load this event's data folder.
           </span>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn no-caps flat label="Cancel" v-close-popup />
-          <q-btn no-caps color="green" label="Activate and restart" :loading="activating" @click="activateSelectedEvent" />
+          <q-btn no-caps color="primary" label="Activate and restart" :loading="activating" @click="activateSelectedEvent" />
         </q-card-actions>
       </q-card>
     </q-dialog>

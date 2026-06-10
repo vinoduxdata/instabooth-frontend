@@ -31,7 +31,7 @@
 
         <q-card-actions v-if="stats.actions && stats.actions.length" align="right">
           <div v-for="(action, index) in stats.actions" :key="index">
-            <q-btn no-caps flat color="green" :label="action" @click="actionButtonClick(action)" />
+            <q-btn no-caps flat color="primary" :label="action" @click="actionButtonClick(action)" />
           </div>
         </q-card-actions>
       </q-list>

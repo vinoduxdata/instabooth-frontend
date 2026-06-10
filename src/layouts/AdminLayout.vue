@@ -1,17 +1,17 @@
 <template>
-  <q-layout id="admin-layout" view="hHh lpR fFf">
-    <q-header class="bg-green">
+  <q-layout id="admin-layout" view="hHh lpR fFf" class="instabooth-admin-layout">
+    <q-header class="instabooth-admin-header">
       <q-toolbar class="q-pa-none">
-        <q-btn no-caps flat color="green-1" class="q-mx-sm" stack to="/" icon="sym_o_arrow_back_ios_new" :label="$t('BTN_LABEL_BACK')" />
-        <q-separator vertical color="green-3"></q-separator>
-        <q-tabs no-caps mobile-arrows shrink stretch active-color="white" class="text-green-1" indicator-color="green-3">
+        <q-btn no-caps flat class="q-mx-sm" stack to="/" icon="sym_o_arrow_back_ios_new" :label="$t('BTN_LABEL_BACK')" />
+        <q-separator vertical />
+        <q-tabs no-caps mobile-arrows shrink stretch class="instabooth-admin-tabs">
           <q-route-tab to="/admin" exact icon="sym_o_dashboard" :label="$t('TAB_LABEL_DASHBOARD')" />
           <q-route-tab to="/admin/booth" icon="sym_o_storefront" label="Booth" />
           <q-route-tab to="/admin/user" icon="sym_o_group" label="Users" />
           <q-route-tab to="/admin/event-template" icon="sym_o_library_books" label="Event Templates" />
           <q-route-tab to="/admin/event" icon="sym_o_event" label="Events" />
           <q-btn-dropdown auto-close stretch flat label="">
-            <q-list class="bg-green-5">
+            <q-list class="instabooth-admin-dropdown">
               <q-item to="/admin/1ststart">
                 <q-item-section avatar> <q-icon name="sym_o_info" /> </q-item-section>
                 <q-item-section>
@@ -43,7 +43,7 @@
           </q-btn-dropdown>
         </q-tabs>
 
-        <q-toolbar-title align="right" class="q-mr-lg">
+        <q-toolbar-title align="right" class="q-mr-lg instabooth-admin-title">
           <span>{{ $t('TITLE_ADMIN_CENTER') }}</span>
         </q-toolbar-title>
 
@@ -54,7 +54,7 @@
         </div>
 
         <div>
-          <q-btn flat no-caps color="green-1" class="q-mx-sm" stack icon="sym_o_logout" :label="$t('Sign out')" @click="click_logout" />
+          <q-btn flat no-caps class="q-mx-sm" stack icon="sym_o_logout" :label="$t('Sign out')" @click="click_logout" />
         </div>
       </q-toolbar>
     </q-header>
@@ -75,3 +75,15 @@ const click_logout = () => {
   router.push('/')
 }
 </script>
+
+<style lang="scss" scoped>
+.instabooth-admin-title span {
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: linear-gradient(90deg, #e9d5ff 0%, #f9a8d4 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+</style>

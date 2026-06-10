@@ -19,13 +19,13 @@
       </q-scroll-area>
 
       <div style="position: absolute; top: 5px; right: -17px">
-        <q-btn dense round unelevated color="green" icon="sym_o_chevron_left" @click="drawer = !drawer" />
+        <q-btn dense round unelevated color="primary" icon="sym_o_chevron_left" @click="drawer = !drawer" />
       </div>
     </q-drawer>
     <q-page-container>
       <q-page>
         <div v-if="!drawer" style="position: absolute; top: 5px; left: -12px; z-index: 2">
-          <q-btn dense round unelevated color="green" icon="sym_o_chevron_right" @click="drawer = !drawer" />
+          <q-btn dense round unelevated color="primary" icon="sym_o_chevron_right" @click="drawer = !drawer" />
         </div>
 
         <div class="config-form q-mt-md row justify-center">
