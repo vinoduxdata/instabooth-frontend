@@ -34,7 +34,18 @@
             :to="{ name: 'template-config', params: { templateId: props.row.id, section: 'app' } }"
           />
           <q-btn no-caps flat color="primary" label="Files" :to="`/admin/event-template/${props.row.id}/files`" />
-          <q-btn no-caps flat color="negative" label="Delete" @click="deleteTemplate(props.row.id)" />
+          <q-btn
+            no-caps
+            flat
+            color="negative"
+            label="Delete"
+            :disable="templateInUse(props.row.id)"
+            @click="deleteTemplate(props.row.id)"
+          >
+            <q-tooltip v-if="templateInUse(props.row.id)">
+              Used by events: {{ eventsUsingTemplate(props.row.id).join(', ') }}. Delete those events first.
+            </q-tooltip>
+          </q-btn>
         </q-td>
       </template>
     </q-table>
@@ -186,6 +197,7 @@ interface TemplateRecord {
 
 const $q = useQuasar()
 const templates = ref<TemplateRecord[]>([])
+const eventRecords = ref<{ id: string; template_id: string }[]>([])
 const loading = ref(false)
 const showDialog = ref(false)
 const saving = ref(false)
@@ -217,17 +229,35 @@ const columns = [
 
 const parseJson = async (response: Response) => {
   if (!response.ok) {
-    const text = await response.text()
-    throw new Error(text || `${response.status} ${response.statusText}`)
+    let message = `${response.status} ${response.statusText}`
+    try {
+      const body = await response.json()
+      if (body?.detail) {
+        message = typeof body.detail === 'string' ? body.detail : JSON.stringify(body.detail)
+      }
+    } catch {
+      const text = await response.text()
+      if (text) message = text
+    }
+    throw new Error(message)
   }
   return response.json()
 }
 
+const eventsUsingTemplate = (templateId: string) =>
+  eventRecords.value.filter((event) => event.template_id === templateId).map((event) => event.id)
+
+const templateInUse = (templateId: string) => eventsUsingTemplate(templateId).length > 0
+
 const loadTemplates = async () => {
   loading.value = true
   try {
-    const response = await parseJson(await _fetch('/api/admin/event-templates'))
-    templates.value = response.templates
+    const [templatesRes, eventsRes] = await Promise.all([
+      parseJson(await _fetch('/api/admin/event-templates')),
+      parseJson(await _fetch('/api/admin/events')),
+    ])
+    templates.value = templatesRes.templates
+    eventRecords.value = eventsRes.events
   } catch (error) {
     $q.notify({ type: 'negative', message: `Failed to load templates: ${error}` })
   } finally {
@@ -398,9 +428,18 @@ const saveTemplate = async () => {
 }
 
 const deleteTemplate = async (templateId: string) => {
+  const using = eventsUsingTemplate(templateId)
+  if (using.length > 0) {
+    $q.notify({
+      type: 'warning',
+      message: `Cannot delete template "${templateId}" — it is used by: ${using.join(', ')}`,
+    })
+    return
+  }
+
   $q.dialog({
     title: 'Delete template',
-    message: `Delete template "${templateId}"?`,
+    message: `Delete template "${templateId}"? This cannot be undone.`,
     cancel: true,
     persistent: true,
   }).onOk(async () => {

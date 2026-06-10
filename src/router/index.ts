@@ -2,6 +2,7 @@ import { defineRouter } from '#q-app/wrappers'
 import { createRouter, createMemoryHistory, createWebHistory, createWebHashHistory } from 'vue-router'
 import routes from './routes'
 import { hasAccessToken } from '../util/auth'
+import { useStateStore } from '../stores/state-store'
 
 /*
  * If not building with SSR mode, you can
@@ -33,6 +34,14 @@ export default defineRouter(function (/* { store, ssrContext } */) {
   Router.beforeEach((to, from, next) => {
     if (to.meta.requiresAdmin && !hasAccessToken()) {
       return next('/auth/')
+    }
+
+    if (to.path === '/' && from.name === 'itempresenter') {
+      const stateStore = useStateStore()
+      const mediaId = stateStore.jobmodel.present_mediaitem_id
+      if (mediaId) {
+        stateStore.presenterDismissedFor = mediaId
+      }
     }
 
     return next()

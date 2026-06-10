@@ -26,6 +26,17 @@
           @click="invokeToggleDisplayFilter"
         />
         <q-btn
+          v-if="itemPresenterMode"
+          stack
+          no-caps
+          rounded
+          color="primary"
+          class="q-mr-sm action-button action-button-share col-auto glass-effect"
+          icon="sym_o_qr_code_2"
+          :label="$t('BTN_LABEL_SHARE')"
+          @click="emit('triggerOfflineShare')"
+        />
+        <q-btn
           v-if="showDownload"
           stack
           no-caps
@@ -100,6 +111,7 @@ const props = withDefaults(
 
 const emit = defineEmits<{
   triggerShareAction: [config_index: number]
+  triggerOfflineShare: []
   triggerToggleDisplayFilter: []
   triggerDeleteMediaitem: [id: string]
   closeEvent: [] // from quasar

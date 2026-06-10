@@ -13,8 +13,10 @@
 
     <ItemNotAvailableError v-else />
 
-    <!-- Image: Retake + Direct Print only (same backend flow as collage try again / approve) -->
-    <q-page-sticky v-if="isImageJob" position="bottom" class="q-ma-lg">
+    <OfflineShareOverlay v-if="showOfflineShare && approval_id" :approval-id="approval_id" @close="showOfflineShare = false" />
+
+    <!-- Image: Retake + Direct Print + Share -->
+    <q-page-sticky v-if="isImageJob && !showOfflineShare" position="bottom" class="q-ma-lg">
       <div class="q-mb-lg action-buttons col">
         <div class="row">
           <q-btn
@@ -33,12 +35,24 @@
             id="item-approval-button-direct-print"
             stack
             rounded
-            class="q-mr-sm action-button col-auto glass-effect"
+            class="q-mr-lg action-button col-auto glass-effect"
             color="positive"
             no-caps
             icon="sym_o_print"
             :label="directPrintLabel"
             @click="userDirectPrint()"
+          />
+
+          <q-btn
+            id="item-approval-button-share"
+            stack
+            rounded
+            class="q-mr-sm action-button col-auto glass-effect"
+            color="primary"
+            no-caps
+            icon="sym_o_qr_code_2"
+            :label="$t('BTN_LABEL_SHARE')"
+            @click="showOfflineShare = true"
           />
         </div>
       </div>
@@ -52,7 +66,7 @@
           <div>{{ $t('MSG_APPROVE_COLLAGE_ITEM_CANCEL_COLLAGE') }}</div>
         </q-btn>
       </q-page-sticky>
-      <q-page-sticky position="bottom" class="q-ma-lg">
+      <q-page-sticky v-if="!showOfflineShare" position="bottom" class="q-ma-lg">
         <div class="q-mb-lg action-buttons col">
           <div class="q-mb-sm row flex flex-center">
             <q-badge color="grey-8" class="q-mr-xs">
@@ -102,6 +116,7 @@ import { ref, onBeforeMount, computed } from 'vue'
 import { useConfigurationStore } from '../stores/configuration-store'
 import { useStateStore } from '../stores/state-store'
 import ItemNotAvailableError from '../components/ItemNotAvailableError.vue'
+import OfflineShareOverlay from './OfflineShareOverlay.vue'
 
 defineProps<{
   approval_id: string
@@ -113,6 +128,7 @@ const configurationStore = useConfigurationStore()
 const stateStore = useStateStore()
 
 const showImage = ref(true)
+const showOfflineShare = ref(false)
 
 const isImageJob = computed(() => stateStore.jobmodel.typ === 'image')
 

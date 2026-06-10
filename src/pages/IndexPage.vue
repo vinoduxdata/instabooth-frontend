@@ -54,10 +54,11 @@
 
     <StyleSelectionOverlay
       v-if="showStyleSelection"
-      :triggers="styleSelectionTriggers"
+      :triggers="currentStyleTriggers"
+      :mode="stripTemplateSelection ? 'template' : 'style'"
       show-back
-      @trigger-action="invokeAction"
-      @back="boothSessionStarted = false"
+      @trigger-action="onStyleSelection"
+      @back="onStyleSelectionBack"
     />
 
     <!-- dialog for approval -->
@@ -95,6 +96,7 @@ import type { TriggerSchema } from '../components/FrontpageTriggerButtons.vue'
 import StyleSelectionOverlay from '../components/StyleSelectionOverlay.vue'
 import WelcomeLandingOverlay from '../components/WelcomeLandingOverlay.vue'
 import { isEmpty } from 'lodash'
+import { useI18n } from 'vue-i18n'
 import { default as PreviewStream } from '../components/PreviewStream.vue'
 import _ from 'lodash'
 import MediaItemApprovalViewer from 'src/components/MediaItemApprovalViewer.vue'
@@ -103,14 +105,18 @@ import TouchToCaptureOverlay from '../components/TouchToCaptureOverlay.vue'
 const stateStore = useStateStore()
 const configurationStore = useConfigurationStore()
 const router = useRouter()
+const { t } = useI18n()
 const btnAdminClickCounter = ref(0)
 const boothSessionStarted = ref(false)
+const stripTemplateSelection = ref(false)
+const STRIP_ACTION = '__strip__'
 
 watch(
   () => stateStore.isStateIdle,
   (idle) => {
     if (idle) {
       boothSessionStarted.value = false
+      stripTemplateSelection.value = false
     }
   },
 )
@@ -125,10 +131,11 @@ watchDebounced(
   },
   { debounce: 500 },
 )
-const styleSelectionTriggers = computed(() => {
+function collectTriggers(actionTypes: string[]): TriggerSchema[] {
   const result: TriggerSchema[] = []
 
-  Object.entries(configurationStore.configuration.actions).forEach(([key, actions]) => {
+  actionTypes.forEach((key) => {
+    const actions = configurationStore.configuration.actions[key] ?? []
     actions.forEach((action, index: number) => {
       const title = action.trigger.ui_trigger.title
       const icon = action.trigger.ui_trigger.icon
@@ -151,7 +158,34 @@ const styleSelectionTriggers = computed(() => {
   })
 
   return result
+}
+
+const imageTriggers = computed(() => collectTriggers(['image']))
+const collageTriggers = computed(() => collectTriggers(['collage']))
+
+const primaryStyleTriggers = computed(() => {
+  const result = [...imageTriggers.value]
+
+  if (collageTriggers.value.length > 0) {
+    result.push({
+      action: STRIP_ACTION,
+      config_index: 0,
+      show_button: true,
+      title: t('MSG_STYLE_SELECTION_STRIP_TITLE'),
+      icon: 'photo_library',
+      use_custom_color: false,
+      custom_color: '',
+    })
+  }
+
+  return result
 })
+
+const styleSelectionTriggers = computed(() => [...imageTriggers.value, ...collageTriggers.value])
+
+const currentStyleTriggers = computed(() =>
+  stripTemplateSelection.value ? collageTriggers.value : primaryStyleTriggers.value,
+)
 
 const showLanding = computed(
   () => stateStore.isStateIdle && !boothSessionStarted.value && styleSelectionTriggers.value.length > 0,
@@ -211,6 +245,24 @@ const invokeAction = (action: string, config_index: number) => {
   stateStore.lastCaptureAction = action
   stateStore.lastCaptureConfigIndex = config_index
   remoteProcedureCall(`/api/${action}/${config_index}`)
+}
+
+const onStyleSelection = (action: string, config_index: number) => {
+  if (action === STRIP_ACTION) {
+    stripTemplateSelection.value = true
+    return
+  }
+
+  invokeAction(action, config_index)
+}
+
+const onStyleSelectionBack = () => {
+  if (stripTemplateSelection.value) {
+    stripTemplateSelection.value = false
+    return
+  }
+
+  boothSessionStarted.value = false
 }
 const stopRecordingVideo = () => {
   remoteProcedureCall('/api/processing/next')

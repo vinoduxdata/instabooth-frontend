@@ -4,12 +4,12 @@
       <router-view />
 
       <!-- in main layout (main app) always show the back button-->
-      <ReturnButton v-if="isSubPage" @trigger-return="$router.back()"></ReturnButton>
+      <ReturnButton v-if="isSubPage" @trigger-return="onReturn"></ReturnButton>
 
       <!-- go back to index after inactivity. matched[0] is / or /standalone so always the parent most of the current entry path -->
       <RouteAfterTimeout
         v-if="isSubPage && !route.meta.standbyMode"
-        @on-timeout="$router.push({ path: route.matched[0].path })"
+        @on-timeout="onSubPageTimeout"
         :timeout-ms="configurationStore.configuration.uisettings.show_frontpage_timeout * 60 * 1000"
       ></RouteAfterTimeout>
 
@@ -38,6 +38,7 @@ import { remoteProcedureCall } from '../util/fetch_api.js'
 import ReturnButton from '../components/ReturnButton.vue'
 import RouteAfterTimeout from 'src/components/RouteAfterTimeout.vue'
 import { useMediacollectionStore } from '../stores/mediacollection-store'
+import { dismissItemPresenter } from '../util/dismiss-item-presenter'
 
 const stateStore = useStateStore()
 const router = useRouter()
@@ -47,6 +48,22 @@ const mediacollectionStore = useMediacollectionStore()
 
 // '/' is main page, used to display/not display the return button. path is always at least '/', never empty
 const isSubPage = computed(() => route.matched.length > 1 && route.matched[0].path != route.matched[1].path)
+
+const onReturn = () => {
+  if (route.name === 'itempresenter') {
+    void dismissItemPresenter(router)
+    return
+  }
+  router.back()
+}
+
+const onSubPageTimeout = () => {
+  if (route.name === 'itempresenter') {
+    void dismissItemPresenter(router)
+    return
+  }
+  router.push({ path: route.matched[0].path })
+}
 
 // watch state to force router to "/" if a capture is triggered
 stateStore.$subscribe((mutation, state) => {
@@ -59,9 +76,17 @@ stateStore.$subscribe((mutation, state) => {
 
     router.push('/')
   }
+  if ((state.target == 'ready' || state.target == 'counting') && stateStore.presenterDismissedFor !== null) {
+    stateStore.presenterDismissedFor = null
+  }
+
   if (state.source == 'completed' && state.target == 'present') {
     // if aborted, source can by anything but completed. when source is completed, the job was successful and we have an id
     const mediaId = stateStore.jobmodel.present_mediaitem_id
+
+    if (mediaId && stateStore.presenterDismissedFor === mediaId) {
+      return
+    }
 
     if (state.jobmodel.typ === 'image') {
       if (stateStore.imageFinishWithPrint && mediaId) {

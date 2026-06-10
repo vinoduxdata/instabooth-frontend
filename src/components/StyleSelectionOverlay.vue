@@ -11,8 +11,8 @@
     </button>
 
     <header class="style-selection__header">
-      <h1 class="style-selection__title">{{ $t('MSG_STYLE_SELECTION_TITLE') }}</h1>
-      <p class="style-selection__subtitle">{{ $t('MSG_STYLE_SELECTION_SUBTITLE') }}</p>
+      <h1 class="style-selection__title">{{ headerTitle }}</h1>
+      <p class="style-selection__subtitle">{{ headerSubtitle }}</p>
     </header>
 
     <div class="style-selection__cards" :class="{ 'style-selection__cards--many': cards.length > 2 }">
@@ -49,10 +49,16 @@ import { useI18n } from 'vue-i18n'
 import { useConfigurationStore } from '../stores/configuration-store'
 import type { TriggerSchema } from './FrontpageTriggerButtons.vue'
 
-const props = defineProps<{
-  triggers: TriggerSchema[]
-  showBack?: boolean
-}>()
+const props = withDefaults(
+  defineProps<{
+    triggers: TriggerSchema[]
+    showBack?: boolean
+    mode?: 'style' | 'template'
+  }>(),
+  {
+    mode: 'style',
+  },
+)
 
 const emit = defineEmits<{
   triggerAction: [action: string, config_index: number]
@@ -61,6 +67,13 @@ const emit = defineEmits<{
 
 const { t } = useI18n()
 const configurationStore = useConfigurationStore()
+
+const headerTitle = computed(() =>
+  props.mode === 'template' ? t('MSG_STYLE_TEMPLATE_SELECTION_TITLE') : t('MSG_STYLE_SELECTION_TITLE'),
+)
+const headerSubtitle = computed(() =>
+  props.mode === 'template' ? t('MSG_STYLE_TEMPLATE_SELECTION_SUBTITLE') : t('MSG_STYLE_SELECTION_SUBTITLE'),
+)
 
 interface StyleCard {
   action: string
@@ -74,25 +87,37 @@ interface StyleCard {
 
 const cards = computed<StyleCard[]>(() => {
   return props.triggers.map((trigger) => {
-    const actionKey = trigger.action.replace('actions/', '')
+    const actionKey = getActionKey(trigger.action)
     const actionConfig = configurationStore.configuration.actions[actionKey]?.[trigger.config_index]
     const photoCount = getPhotoCount(actionKey, actionConfig)
-    const variant = actionKey === 'image' ? 'single' : actionKey === 'collage' ? 'strip' : 'default'
+    const variant =
+      actionKey === 'image' ? 'single' : actionKey === 'collage' || actionKey === '__strip__' ? 'strip' : 'default'
 
     return {
       action: trigger.action,
       config_index: trigger.config_index,
       title: trigger.title,
       description: getDescription(actionKey, photoCount),
-      badge:
-        photoCount === 1
-          ? t('MSG_STYLE_SELECTION_BADGE_ONE')
-          : t('MSG_STYLE_SELECTION_BADGE_MANY', { count: photoCount }),
+      badge: getBadge(actionKey, photoCount),
       variant,
       icon: trigger.icon,
     }
   })
 })
+
+function getActionKey(action: string): string {
+  return action.replace('actions/', '')
+}
+
+function getBadge(actionKey: string, photoCount: number): string {
+  if (actionKey === '__strip__') {
+    return t('MSG_STYLE_SELECTION_BADGE_STRIP')
+  }
+  if (photoCount === 1) {
+    return t('MSG_STYLE_SELECTION_BADGE_ONE')
+  }
+  return t('MSG_STYLE_SELECTION_BADGE_MANY', { count: photoCount })
+}
 
 function getPhotoCount(actionKey: string, actionConfig: Record<string, unknown> | undefined): number {
   if (actionKey === 'image') {
@@ -113,6 +138,9 @@ function getPhotoCount(actionKey: string, actionConfig: Record<string, unknown> 
 function getDescription(actionKey: string, photoCount: number): string {
   if (actionKey === 'image') {
     return t('MSG_STYLE_SELECTION_SINGLE_DESC')
+  }
+  if (actionKey === '__strip__') {
+    return t('MSG_STYLE_SELECTION_STRIP_DESC')
   }
   if (actionKey === 'collage') {
     return photoCount === 3 ? t('MSG_STYLE_SELECTION_STRIP_DESC') : t('MSG_STYLE_SELECTION_COLLAGE_DESC', { count: photoCount })

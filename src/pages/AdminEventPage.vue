@@ -270,7 +270,17 @@ const statusColor = (status: EventStatus) => {
 
 const parseJson = async (response: Response) => {
   if (!response.ok) {
-    throw new Error(`${response.status} ${response.statusText}`)
+    let message = `${response.status} ${response.statusText}`
+    try {
+      const body = await response.json()
+      if (body?.detail) {
+        message = typeof body.detail === 'string' ? body.detail : JSON.stringify(body.detail)
+      }
+    } catch {
+      const text = await response.text()
+      if (text) message = text
+    }
+    throw new Error(message)
   }
   return response.json()
 }
@@ -428,13 +438,21 @@ const activateSelectedEvent = async () => {
   if (!selectedEvent.value) return
   activating.value = true
   try {
-    await parseJson(
-      await _fetch(`/api/admin/events/${selectedEvent.value.id}/activate?restart=true`, {
+    const result = await parseJson(
+      await _fetch(`/api/admin/events/${encodeURIComponent(selectedEvent.value.id)}/activate?restart=true`, {
         method: 'POST',
       }),
     )
+    showActivateDialog.value = false
+    if (result.restart_required) {
+      $q.notify({ type: 'info', message: 'Event activated. Booth is restarting…' })
+    } else {
+      $q.notify({ type: 'positive', message: 'Event activated' })
+      await loadData()
+    }
   } catch (error) {
     $q.notify({ type: 'negative', message: `Activate failed: ${error}` })
+  } finally {
     activating.value = false
   }
 }

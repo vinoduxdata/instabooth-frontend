@@ -6,7 +6,7 @@
         <HeaderCountdownTimer
           v-if="headercountdowntimer"
           :duration="configurationStore.configuration.uisettings.AUTOCLOSE_NEW_ITEM_ARRIVED"
-          @trigger-timeout="$router.push({ path: '/' })"
+          @trigger-timeout="onPresenterTimeout"
         ></HeaderCountdownTimer>
         <HeaderProcessing v-if="displayIndeterminateProgressbar"></HeaderProcessing>
       </q-header>
@@ -43,6 +43,12 @@
             />
           </q-page-sticky>
 
+          <OfflineShareOverlay
+            v-if="showOfflineShare && currentMediaitem"
+            :media-id="currentMediaitem.id"
+            @close="showOfflineShare = false"
+          />
+
           <PageToolbar
             :item="currentMediaitem"
             :item-presenter-mode="props.itemPresenterMode"
@@ -59,6 +65,7 @@
             @trigger-toggle-display-filter="rightDrawerOpen = !rightDrawerOpen"
             @trigger-delete-mediaitem="doDeleteItem"
             @trigger-share-action="doShareAction"
+            @trigger-offline-share="showOfflineShare = true"
           ></PageToolbar>
 
           <q-dialog v-model="showDialogShareActionWithParameters">
@@ -107,6 +114,8 @@ import { type ShareSchema } from '../components/ShareTriggerButtons.vue'
 import { remoteProcedureCall, _fetch } from '../util/fetch_api.js'
 import { watchDebounced } from '@vueuse/core'
 import { default as MediaItemPreviewViewer } from '../components/MediaItemPreviewViewer.vue'
+import OfflineShareOverlay from '../components/OfflineShareOverlay.vue'
+import { dismissItemPresenter } from '../util/dismiss-item-presenter'
 
 const $q = useQuasar()
 const route = useRoute()
@@ -122,6 +131,7 @@ const showDialogShareActionWithParameters = ref(false)
 const shareActionWithParametersConfigIndex = ref(0)
 const available_filter = ref([])
 const qrShareUrls = ref([])
+const showOfflineShare = ref(false)
 const props = defineProps<{
   startTimer: boolean
   itemPresenterMode?: boolean
@@ -137,6 +147,14 @@ watch(route, (to) => {
 onMounted(() => {
   headercountdowntimer.value = props.startTimer
 })
+
+const onPresenterTimeout = () => {
+  if (props.itemPresenterMode) {
+    void dismissItemPresenter(router)
+    return
+  }
+  void router.push({ path: '/' })
+}
 const onCarouselTransition = (newMediaitemId: string) => {
   selectedMediaitemId.value = newMediaitemId
 }

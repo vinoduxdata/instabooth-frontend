@@ -10,6 +10,8 @@ export const useStateStore = defineStore('state-store', {
     lastCaptureConfigIndex: 0 as number,
     /** Set when image approval "Direct Print" is chosen; triggers print after job completes. */
     imageFinishWithPrint: false,
+    /** When set, auto-navigation to item presenter is suppressed for this media id. */
+    presenterDismissedFor: null as string | null,
 
     jobmodel: {
       typ: null as string,
